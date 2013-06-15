@@ -179,8 +179,6 @@ sub breadth_first_search {
     };
 
     while (my $vertex = shift(@queue)) {
-        next if $states->{$vertex} eq 'black';
-
         $cb_vertex_discovered->($vertex);
 
         foreach my $n ($self->neighbors( $vertex)) {
@@ -197,6 +195,7 @@ sub breadth_first_search {
             $parents->{$n} = $vertex;
         }
 
+        $states->{$vertex} = 'black';
         $cb_vertex_processed->($vertex);
     }
 

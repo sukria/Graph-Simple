@@ -60,6 +60,10 @@ subtest "basic graph features on undirected graph" => sub {
         my ($u, $v, $w) = @$t;
         is $g->weight($u, $v), $w, "Edge $u,$v weights $w";
     }
+
+    eval { $g->neighbors('NonExistentVertex'); };
+    like $@, qr{Unknown vertex 'NonExistentVertex'},
+      "neighbors triggers an unknown vertex exception";
 };
 
 subtest "basic graph features on directed graph" => sub {
@@ -129,6 +133,14 @@ subtest 'Depth-First Search' => sub {
 
     is_deeply \@postorder, [ qw(D E F B G C A ) ],
       "Last order visits are good";
+
+    @preorder  = ();
+    @postorder = ();
+    $g->depth_first_search('A');
+    is_deeply \@preorder, [],
+      "the cb_vertex_discovered default callback does nothing";
+    is_deeply \@postorder, [],
+      "the cb_vertex_processed default callback does nothing";
 };
 
 subtest "Prim" => sub {
