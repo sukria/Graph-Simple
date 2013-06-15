@@ -73,6 +73,8 @@ has is_directed => (
 
 Return the array of vertices
 
+    my @vertices = $g->vertices;
+
 =cut
 
 sub vertices {
@@ -120,6 +122,8 @@ sub _add_edge {
 
 Return the array of neighbors for the given vertex
 
+    my @neighbors = $g->neighbors('u');
+
 =cut
 
 sub neighbors {
@@ -134,6 +138,8 @@ sub neighbors {
 =method weight
 
 Return the weight of the edge
+
+    my $w = $g->weight('u', 'v');
 
 =cut
 
@@ -308,8 +314,26 @@ sub prim {
 
 =method dijkstra
 
-Implementation of the Dijkstra algorithm to find all possible shortest path from
+Implementation of the Dijkstra algorithm to find all possible shortest paths from
 a vertex C<$s> to all other vertices of the graph.
+
+The return value of this method is a hashref containing the following entries:
+
+=over 4
+
+=item spanning_tree
+
+A L<Graph::Simple> object representing the minimum spanning tree produced by the
+Dijkstra traversal.
+
+=item distances
+
+An hashref containing for each vertices the distance between that vertex and the
+source vertex.
+
+=back
+
+    my $dijkstra = $g->dijkstra('E');
 
 =cut
 
@@ -357,10 +381,13 @@ sub dijkstra {
 
 =method shortest_path
 
-Return the shortest path from between two vertices as a list.
+Return the shortest path between two vertices as a list of vertices.
 
-    my $path = $g->shortest_path('A', 'E');
-    # [ 'A', 'D', 'F', 'E']
+    my @path = $g->shortest_path('A', 'E');
+    # eg: ( 'A', 'D', 'F', 'E' )
+
+Note that internally, this method uses the spanning tree produced by the
+Dijkstra algorithm to compute the shortest path.
 
 =cut
 
@@ -370,7 +397,7 @@ sub shortest_path {
 
     my $mst = $dijkstra->{spanning_tree};
     # we build a reverse path, starting from the destination, and backtracking the
-    # source each step with the neighbours of the vertex in the spanning tree
+    # source each step with the neighbors of the vertex in the spanning tree
     my @reverse_path;
     my $current = $destination;
 
