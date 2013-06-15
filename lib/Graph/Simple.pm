@@ -1,6 +1,37 @@
 package Graph::Simple;
 #ABSTRACT: simple and intuitive interface for manipulating graph
 
+=head1 DESCRIPTION
+
+In computer science, a graph is an abstract data type that is meant to implement
+the graph and hypergraph concepts from mathematics.
+
+A graph data structure consists of a finite (and possibly mutable) set of
+ordered pairs, called I<edges>, of certain entities called I<vertices>.
+As in mathematics, an edge (x,y) is said to point or go from x to y.
+
+A graph data structure may also associate to each edge some edge value, such as
+a symbolic label or a numeric attribute (cost, capacity, length, etc.) most
+oftenly refered to as the I<weight> of the edge. 
+
+See L<Wikipedia|http://en.wikipedia.org/wiki/Graph_(abstract_data_type)> for
+more details about the theory.
+
+This class provides an easy to use and intuitive API for manipulating graphs in
+Perl. It's a native Perl implementation and has no external dependencies.
+
+=head1 SYNOPSYS
+
+    my $g = Graph::Simple->new ( is_directed => 1, is_weighted => 1);
+
+    $g->add_edge( 'Al',  'Bob', 2 );
+    $g->add_edge( 'Al',  'Jim', 3 );
+    $g->add_edge( 'Joe',  'Jim', 3 );
+    
+    $g->neighbors('Al');
+
+=cut
+
 use Moo;
 use Carp 'croak';
 
@@ -361,3 +392,33 @@ sub shortest_path {
 }
 
 1;
+__END__
+
+=head1 SEE ALSO
+
+This distribution has been written because when I looked on CPAN for an easy to
+use and lightweight interface for manipulating Graph in Perl, I dind't find
+something that fitted my expectations.
+
+Other distributions exist though:
+
+=over 4
+
+=item L<Graph>
+
+A rather feature-rich implementation but with a complex API.
+
+=item L<Graph::Fast>
+
+Less features than Graph but presumably faster. Appears to
+be unmaintained since 2010 though.
+
+=item L<Graph::Boost>
+
+Perl bindings to the C++ graph library Boost. Certainly the fastest
+implementation but depends on C++, obviously.
+
+=back
+
+=cut
+
