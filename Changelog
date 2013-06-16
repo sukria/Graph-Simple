@@ -1,3 +1,7 @@
-0.02
+{{$NEXT}}
+
+    * Added missing dependency on Moo
+
+0.02/00.1
 
     * initial release
