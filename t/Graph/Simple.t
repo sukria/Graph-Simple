@@ -43,6 +43,46 @@ sub directed_weighted_graph {
     return $g;
 };
 
+subtest 'Delete edges on a directed graph' => sub {
+    my $g =  Graph::Simple->new (is_directed => 1);
+
+    $g->add_edge( 'Al',  'Bob', 2 );
+    $g->add_edge( 'Bob',  'Al', 2 );
+    $g->add_edge( 'Bob',  'Ed', 1 );
+
+    is_deeply [$g->neighbors('Al')], [ 'Bob' ], 
+        "Bob is a neighbor of Al";
+    is_deeply [$g->neighbors('Bob')], [ 'Al', 'Ed' ],
+        "Al and Ed are neighbors of Bob";
+
+    $g->delete_edge('Al', 'Bob');
+    is_deeply [$g->neighbors('Al')], [ ],
+      "Since the edge 'Al to Bob' is deleted, Al has no more neighbors";
+
+    is_deeply [$g->neighbors('Bob')], [ 'Al', 'Ed' ],
+      "... but Bob still has Al and Ed as neighbors";
+};
+
+subtest 'Delete edges on an undirected graph' => sub {
+    my $g =  Graph::Simple->new (is_directed => 0);
+
+    $g->add_edge( 'Al',  'Bob', 2 );
+    $g->add_edge( 'Bob',  'Ed', 1 );
+
+    is_deeply [$g->neighbors('Al')], [ 'Bob' ], 
+        "Bob is a neighbor of Al";
+    is_deeply [$g->neighbors('Bob')], [ 'Al', 'Ed' ],
+        "Al and Ed are neighbors of Bob";
+
+    $g->delete_edge('Al', 'Bob');
+    is_deeply [$g->neighbors('Al')], [ ],
+      "Since the edge 'Al to Bob' is deleted, Al has no more neighbors";
+
+    is_deeply [$g->neighbors('Bob')], [ 'Ed' ],
+      "... and Bob lost Al from his neighbors";
+};
+
+
 subtest "basic graph features on undirected graph" => sub {
     my $g = undirected_weighted_graph();
 
@@ -61,9 +101,15 @@ subtest "basic graph features on undirected graph" => sub {
         is $g->weight($u, $v), $w, "Edge $u,$v weights $w";
     }
 
+    $g->weight('Bob', 'Sam', 43);
+    is $g->weight('Bob', 'Sam'), 43, "weight has been set";
+
     eval { $g->neighbors('NonExistentVertex'); };
     like $@, qr{Unknown vertex 'NonExistentVertex'},
       "neighbors triggers an unknown vertex exception";
+
+    ok $g->is_adjacent('Bob', 'Mike'), "Bob is adjacent to Mike";
+    ok !$g->is_adjacent('Bob', 'Finn'), "Bob is not adjacent to Finn";
 };
 
 subtest "basic graph features on directed graph" => sub {

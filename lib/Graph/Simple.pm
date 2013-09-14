@@ -118,11 +118,37 @@ sub _add_edge {
       if $self->is_weighted;
 }
 
+=methpd delete_edge
+
+    $g->delete_edge(x, y)
+    
+Removes the edge from x to y, if it is there.
+
+=cut
+
+sub delete_edge {
+    my ($self, $u, $v) = @_;
+
+    $self->_delete_edge($u, $v);
+    $self->_delete_edge($v, $u) if ! $self->is_directed;
+}
+
+sub _delete_edge {
+    my ($self, $u, $v) = @_;
+
+    my @neighbors = $self->neighbors($u);
+    my @new;
+    foreach my $e (@neighbors) {
+        push @new, $e if $e ne $v;
+    }
+    $self->_adjencies->{$u} = \@new;
+}
+
 =method neighbors
 
-Return the array of neighbors for the given vertex
-
     my @neighbors = $g->neighbors('u');
+
+Lists all vertices y such that there is an edge from x to y.
 
 =cut
 
@@ -137,15 +163,38 @@ sub neighbors {
 
 =method weight
 
-Return the weight of the edge
+Accessor to the weight of the edge. If called with two arguments, return the
+value previously set, with three arguments, set the weight:
 
+    # reader
     my $w = $g->weight('u', 'v');
+
+    # setter
+    $g->weight('u', 'v', 42);
 
 =cut
 
 sub weight {
+    my ($self, $u, $v, $w) = @_;
+    if (@_ == 3) {
+      return $self->_weights->{$u}->{$v};
+    }
+    else {
+        $self->_weights->{$u}->{$v} = $w;
+    }
+}
+
+=method is_adjacent
+
+    $g->is_adjacent(x, y)
+
+Tests whether there is an edge from node x to node y.
+
+=cut
+
+sub is_adjacent {
     my ($self, $u, $v) = @_;
-    return $self->_weights->{$u}->{$v};
+    return grep /^$v$/, @{ $self->_adjencies->{$u} };
 }
 
 =method breadth_first_search
