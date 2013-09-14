@@ -194,7 +194,7 @@ Tests whether there is an edge from node x to node y.
 
 sub is_adjacent {
     my ($self, $u, $v) = @_;
-    return grep /^$v$/, @{ $self->_adjencies->{$u} };
+    return grep { /^$v$/ }, @{ $self->_adjencies->{$u} };
 }
 
 =method breadth_first_search
