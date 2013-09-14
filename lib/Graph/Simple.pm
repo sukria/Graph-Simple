@@ -118,7 +118,7 @@ sub _add_edge {
       if $self->is_weighted;
 }
 
-=methpd delete_edge
+=method delete_edge
 
     $g->delete_edge(x, y)
     
