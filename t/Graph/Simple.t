@@ -50,7 +50,7 @@ subtest 'Delete edges on a directed graph' => sub {
     $g->add_edge( 'Bob',  'Al', 2 );
     $g->add_edge( 'Bob',  'Ed', 1 );
 
-    is_deeply [$g->neighbors('Al')], [ 'Bob' ], 
+    is_deeply [$g->neighbors('Al')], [ 'Bob' ],
         "Bob is a neighbor of Al";
     is_deeply [$g->neighbors('Bob')], [ 'Al', 'Ed' ],
         "Al and Ed are neighbors of Bob";
@@ -69,7 +69,7 @@ subtest 'Delete edges on an undirected graph' => sub {
     $g->add_edge( 'Al',  'Bob', 2 );
     $g->add_edge( 'Bob',  'Ed', 1 );
 
-    is_deeply [$g->neighbors('Al')], [ 'Bob' ], 
+    is_deeply [$g->neighbors('Al')], [ 'Bob' ],
         "Bob is a neighbor of Al";
     is_deeply [$g->neighbors('Bob')], [ 'Al', 'Ed' ],
         "Al and Ed are neighbors of Bob";
@@ -86,16 +86,16 @@ subtest 'Delete edges on an undirected graph' => sub {
 subtest "basic graph features on undirected graph" => sub {
     my $g = undirected_weighted_graph();
 
-    is_deeply 
-        [ sort $g->neighbors('Vic') ], 
+    is_deeply
+        [ sort $g->neighbors('Vic') ],
         [ sort qw(Kelly Mike Finn Jess) ],
       "Neighbours are correct for Vic";
 
     foreach my $t (
-        ['Bob', 'Sam', 8], 
-        ['Sam', 'Bob', 8], 
-        ['Kelly', 'Vic', 3], 
-        ['Vic', 'Finn', 3], 
+        ['Bob', 'Sam', 8],
+        ['Sam', 'Bob', 8],
+        ['Kelly', 'Vic', 3],
+        ['Vic', 'Finn', 3],
     ) {
         my ($u, $v, $w) = @$t;
         is $g->weight($u, $v), $w, "Edge $u,$v weights $w";
@@ -115,21 +115,21 @@ subtest "basic graph features on undirected graph" => sub {
 subtest "basic graph features on directed graph" => sub {
     my $g = directed_weighted_graph();
 
-    is_deeply 
-        [ $g->neighbors('Bob') ], 
+    is_deeply
+        [ $g->neighbors('Bob') ],
         [ qw(Al) ],
       "Neighbours are correct for Bob";
 
-    is_deeply 
-        [ sort $g->neighbors('Al') ], 
+    is_deeply
+        [ sort $g->neighbors('Al') ],
         [ sort qw(Bob Jim) ],
       "Neighbours are correct for Al";
 
     foreach my $t (
-        ['Bob', 'Al', 4], 
-        ['Al', 'Bob', 2], 
-        ['Al', 'Jim', 3], 
-        ['Ed', 'Bob', 1], 
+        ['Bob', 'Al', 4],
+        ['Al', 'Bob', 2],
+        ['Al', 'Jim', 3],
+        ['Ed', 'Bob', 1],
     ) {
         my ($u, $v, $w) = @$t;
         is $g->weight($u, $v), $w, "Edge $u,$v weights $w";
@@ -235,6 +235,18 @@ subtest 'Dijkstra' => sub {
     is_deeply [$g->shortest_path('Mike', 'Kelly')], [
         qw(Mike Vic Kelly)
     ], "Shortest path from Mike to Kelly";
+};
+
+# Taken almost verbatim from issue #4
+# https://github.com/sukria/Graph-Simple/issues/4
+subtest "Shortest path" => sub {
+    my @bounds = ( [ 1, 6 ], [ 6, 7 ], [7, 8 ] );
+    my $g = Graph::Simple->new( is_directed => 0, is_weighted => 1);
+
+    $g->add_edge( @$_, 1 ) foreach @bounds;
+
+    is_deeply [$g->shortest_path( 1, 6)], [1, 6];
+    is_deeply [$g->shortest_path( 1, 8)], [1, 6, 7, 8];
 };
 
 done_testing;
