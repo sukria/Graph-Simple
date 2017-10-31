@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+    * Added [MetaJSON] to dist.ini, so releases will include META.json
+
 0.04      2013-09-14 11:41:46 Europe/Paris
 
     * Added missing dependency on Moo
